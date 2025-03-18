@@ -1,6 +1,9 @@
+import { PlayerController } from "./player.controller";
 import { TournamentGroupController } from "./tournament.controller";
 
-class ControllerV1 {
+class V1Controller {
   TournamentGroup = new TournamentGroupController();
+  Player = new PlayerController();
 }
-export const controllerV1 = new ControllerV1();
+
+export const v1Controller = new V1Controller();

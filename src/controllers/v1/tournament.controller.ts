@@ -25,12 +25,14 @@ export class TournamentGroupController {
       next(err);
     }
   }
-  public async getAll(req: Request, res: Response, next: NextFunction) {
+  public async getAll(
+    req: Request<{}, {}, {}, PaginationRequest>,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const tournamentGroups =
-        await v1Service.TournamentGroup.getAllTournaments(
-          req.body as PaginationRequest
-        );
+        await v1Service.TournamentGroup.getAllTournaments(req.query);
       res
         .status(200)
         .json(
