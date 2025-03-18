@@ -1,0 +1,11 @@
+import { Router } from "express";
+import tournamentGroupRoute from "./tournamentGroup.route";
+import roundRoute from "./round.route";
+import playerRoute from "./player.route";
+import matchRoute from "./match.route";
+const route = Router();
+route.use("/tournament-groups", tournamentGroupRoute);
+route.use("/rounds", roundRoute);
+route.use("/players", playerRoute);
+route.use("/matches", matchRoute);
+export default route;
