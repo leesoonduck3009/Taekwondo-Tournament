@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { controllerV1 } from "../../controllers/v1";
+import { v1Controller } from "../../controllers/v1";
 const route = Router();
-route.get("/", controllerV1.TournamentGroup.getAll);
-route.post("/", controllerV1.TournamentGroup.create);
-route.get("/:id", controllerV1.TournamentGroup.getById);
-route.put("/:id", controllerV1.TournamentGroup.updateById);
-route.delete("/:id", controllerV1.TournamentGroup.deleteById);
+route.get("/", v1Controller.TournamentGroup.getAll);
+route.post("/", v1Controller.TournamentGroup.create);
+route.get("/:id", v1Controller.TournamentGroup.getById);
+route.put("/:id", v1Controller.TournamentGroup.updateById);
+route.delete("/:id", v1Controller.TournamentGroup.deleteById);
 export default route;

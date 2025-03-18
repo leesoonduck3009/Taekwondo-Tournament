@@ -4,6 +4,7 @@ import { TableName } from "../enums/TableName";
 
 export interface IPlayer extends Document {
   name: string;
+  studentId: string;
   gender: Gender;
   weight: number;
   tournamentGroupId: mongoose.Types.ObjectId;
@@ -11,6 +12,7 @@ export interface IPlayer extends Document {
 
 const PlayerSchema = new Schema<IPlayer>({
   name: { type: String, required: true },
+  studentId: { type: String, required: true },
   gender: { type: String, enum: Object.values(Gender), required: true },
   weight: { type: Number, required: true },
   tournamentGroupId: {
