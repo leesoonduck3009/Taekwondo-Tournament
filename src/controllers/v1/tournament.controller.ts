@@ -7,6 +7,7 @@ import {
   TournamentGroupDto,
 } from "../../dtos/Tournament.dto";
 import { v1Service } from "../../services/index.service";
+import { ExcelExtractionService } from "../../utils/ExcelExtractionService";
 export class TournamentGroupController {
   public async create(
     req: Request<{}, {}, CreateTournamentRequestDto>,
@@ -79,6 +80,28 @@ export class TournamentGroupController {
       res.status(204).end();
     } catch (err) {
       next(err);
+    }
+  }
+
+  public async uploadTournamentsByExcel(
+    req: Request<{}, {}, { file: Express.Multer.File }>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+      const excelService =
+        new ExcelExtractionService<CreateTournamentRequestDto>();
+
+      const tournaments = excelService.extractDataFromExcel(req.file);
+      const response = await v1Service.TournamentGroup.addRangeTournaments(
+        tournaments
+      );
+      res.status(200).json(ApiResponse.success<TournamentGroupDto[]>(response));
+    } catch (error: any) {
+      next(error);
     }
   }
 }

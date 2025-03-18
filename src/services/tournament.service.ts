@@ -30,6 +30,23 @@ export class TournamentGroupService {
       throw new Error(`Error creating tournament: ${error}`);
     }
   }
+  
+  public async addRangeTournaments(
+    request: CreateTournamentRequestDto[]
+  ): Promise<TournamentGroupDto[]> {
+    const tournaments = request.map((tournament) => ({
+      totalPlayers: 0,
+      ...tournament,
+    }));
+    const savedTournaments = await TournamentGroup.insertMany(tournaments);
+    return savedTournaments.map((tournament) => ({
+      id: tournament.id,
+      totalPlayers: tournament.totalPlayers,
+      weightClass: tournament.weightClass,
+      gender: tournament.gender,
+    }));
+  }
+
   public async getAllTournaments(pagination: PaginationRequest) {
     const limit = pagination.limit ?? DEFAULT_LIMIT;
     const index = pagination.index ?? DEFAULT_INDEX;
@@ -81,6 +98,7 @@ export class TournamentGroupService {
       throw new Error(`Error updating tournament: ${error}`);
     }
   }
+
   public async deleteTournamentById(id: string) {
     const tournament = await TournamentGroup.findById(id);
     if (!tournament)

@@ -38,6 +38,7 @@ export class PlayerService {
     tournamentGroupId: string
   ): Promise<PlayerDto[]> {
     const tournamentGroup = await TournamentGroup.findById(tournamentGroupId);
+    
     if (!tournamentGroup)
       throw new NotFoundException(
         `Tournament Group with id '${tournamentGroupId}' has not found`
