@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "ES2017", // Hỗ trợ ES2017 (async/await, Promise cải tiến)
+    "module": "CommonJS", // Dùng CommonJS (Node.js)
+    "outDir": "./dist", // Nơi lưu file đã biên dịch
+    "rootDir": "./src", // Thư mục chứa mã nguồn TypeScript
+    "strict": true, // Bật chế độ kiểm tra chặt chẽ
+    "esModuleInterop": true, // Hỗ trợ import kiểu ES6 từ CommonJS
+    "forceConsistentCasingInFileNames": true, // Ngăn lỗi liên quan đến chữ hoa/thường
+    "skipLibCheck": true // Bỏ qua kiểm tra thư viện (giúp biên dịch nhanh hơn)
+  },
+  "include": ["src"], // Chỉ biên dịch file trong thư mục src
+  "exclude": ["node_modules"], // Bỏ qua node_modules
+  "baseUrl": "./",
+  "paths": {
+    "@src/*": ["./src/*"]
+  }
+}
