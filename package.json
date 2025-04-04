@@ -22,11 +22,13 @@
     "mongoose": "^8.12.1",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.9",
+    "tkuapp": "file:",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@types/cors": "^2.8.17",
+    "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.0",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.13.10",
