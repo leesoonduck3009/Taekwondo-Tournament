@@ -6,20 +6,13 @@ import {
   PlayerRequestDto,
 } from "../dtos/Player.dto";
 import { NotFoundException } from "../exceptions/NotFoundException";
-import { Player } from "../models/Player";
+import mapper from "../mapping/Mapper";
+import { MappingProfileName } from "../mapping/profiles/MappingProfileName";
+import { IPlayer, Player } from "../models/Player";
 import { TournamentGroup } from "../models/TournamentGroup";
 
 export class PlayerService {
   public async createPlayer(request: PlayerRequestDto): Promise<PlayerDto> {
-    const tournamentGroup = await TournamentGroup.findById(
-      request.tournamentGroupId
-    );
-
-    if (!tournamentGroup)
-      throw new NotFoundException(
-        `Tournament Group with id '${request.tournamentGroupId}' has not found`
-      );
-
     const player = new Player({ ...request });
     const savedPlayer = await player.save();
 
@@ -27,26 +20,17 @@ export class PlayerService {
       id: savedPlayer.id,
       name: savedPlayer.name,
       studentId: savedPlayer.studentId,
-      tournamentGroupId: savedPlayer.tournamentGroupId.toString(),
       weight: savedPlayer.weight,
       gender: savedPlayer.gender,
+      avatarUrl: savedPlayer.avatarUrl,
     };
   }
 
   public async addRangePlayers(
-    players: PlayerAddRangeItemDto[],
-    tournamentGroupId: string
+    players: PlayerAddRangeItemDto[]
   ): Promise<PlayerDto[]> {
-    const tournamentGroup = await TournamentGroup.findById(tournamentGroupId);
-    
-    if (!tournamentGroup)
-      throw new NotFoundException(
-        `Tournament Group with id '${tournamentGroupId}' has not found`
-      );
-
     const newPlayers = players.map((player) => ({
       ...player,
-      tournamentGroupId: tournamentGroupId,
     }));
 
     const savedPlayers = await Player.insertMany(newPlayers);
@@ -55,67 +39,53 @@ export class PlayerService {
       id: player.id,
       name: player.name,
       studentId: player.studentId,
-      tournamentGroupId: player.tournamentGroupId.toString(),
       weight: player.weight,
       gender: player.gender,
+      avatarUrl: player.avatarUrl,
     }));
   }
 
   public async getAllPlayeres(paginationRequest: PaginationRequest) {
-    //TODO: Implement this getAllPlayer as method
     const limit = paginationRequest.limit ?? 10;
     const index = paginationRequest.index ?? 0;
 
     const players = await Player.find()
       .skip(limit * index)
       .limit(limit);
+    const total = await Player.countDocuments({});
 
     const response: Pagination<PlayerDto> = {
-      items: players.map((player) => ({
-        id: player.id,
-        name: player.name,
-        studentId: player.studentId,
-        tournamentGroupId: player.tournamentGroupId.toString(),
-        weight: player.weight,
-        gender: player.gender,
-      })),
+      items: mapper.mapArray<IPlayer, PlayerDto>(
+        MappingProfileName.playerToDtoProfile,
+        players
+      ),
       index: index,
-      limit: limit,
+      total: total,
     };
 
     return response;
   }
 
+  public async getAllWithTournamentGroupId(tournamentGroupId: string) {
+    const players = await Player.find({ tournamentGroupId: tournamentGroupId });
+
+    return players;
+  }
   public async getPlayerById(id: string): Promise<PlayerDto> {
     //TODO: Implement this getPlayerById method
     const player = await Player.findById(id);
     if (!player)
       throw new NotFoundException(`Player with id '${id}' has not found`);
-    return {
-      id: player.id,
-      name: player.name,
-      studentId: player.studentId,
-      weight: player.weight,
-      gender: player.gender,
-      tournamentGroupId: player.tournamentGroupId.toString(),
-    };
+    return mapper.map<IPlayer, PlayerDto>(
+      MappingProfileName.playerToDtoProfile,
+      player
+    );
   }
 
   public async updatePlayerById(
     id: string,
     request: PlayerRequestDto
   ): Promise<PlayerDto> {
-    //TODO: Implement this updatePlayerById method
-    if (request.tournamentGroupId) {
-      const tournamentGroup = await TournamentGroup.findById(
-        request.tournamentGroupId
-      );
-      if (!tournamentGroup)
-        throw new NotFoundException(
-          `Tournament Group with id '${request.tournamentGroupId}' has not found`
-        );
-    }
-
     const updatedPlayer = await Player.findByIdAndUpdate(id, request, {
       new: true,
     });
@@ -129,7 +99,7 @@ export class PlayerService {
       studentId: updatedPlayer.studentId,
       weight: updatedPlayer.weight,
       gender: updatedPlayer.gender,
-      tournamentGroupId: updatedPlayer.tournamentGroupId.toString(),
+      avatarUrl: updatedPlayer.avatarUrl,
     };
   }
 

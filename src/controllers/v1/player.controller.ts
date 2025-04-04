@@ -31,10 +31,7 @@ export class PlayerController {
   ) {
     try {
       const body = req.body;
-      const players = await v1Service.Player.addRangePlayers(
-        body.items,
-        body.tournamentGroupId
-      );
+      const players = await v1Service.Player.addRangePlayers(body.items);
       res.status(201).json(ApiResponse.success<PlayerDto[]>(players));
     } catch (err) {
       next(err);
@@ -108,10 +105,7 @@ export class PlayerController {
       const excelService = new ExcelExtractionService<PlayerDto>();
 
       const players = excelService.extractDataFromExcel(req.file);
-      const response = await v1Service.Player.addRangePlayers(
-        players,
-        req.body.tournamentId
-      );
+      const response = await v1Service.Player.addRangePlayers(players);
       res.status(200).json(ApiResponse.success<PlayerDto[]>(response));
     } catch (error: any) {
       next(error);
