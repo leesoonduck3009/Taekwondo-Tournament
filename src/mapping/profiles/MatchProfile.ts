@@ -10,7 +10,6 @@ export const matchToDtoProfile = new Profile<IMatch, MatchDto>((match) => {
   const bluePlayer = match.bluePlayerId as IPlayer | undefined;
   const winner = match.winnerId as IPlayer | undefined;
   const matchParent = match.parentMatchId as IMatch | undefined;
-  console.log("match", match);
   return {
     id: match.id,
     name: match.name,

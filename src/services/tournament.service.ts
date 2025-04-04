@@ -11,6 +11,7 @@ import { DEFAULT_INDEX, DEFAULT_LIMIT } from "../constants/Pagination";
 
 export class TournamentGroupService {
   constructor() {}
+
   public async createTournament(
     tournamentData: CreateTournamentRequestDto
   ): Promise<TournamentGroupDto> {

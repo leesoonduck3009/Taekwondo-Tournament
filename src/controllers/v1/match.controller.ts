@@ -78,7 +78,6 @@ export class MatchController {
           };
         }
       );
-      console.log("request", request[0].matches);
       const matches = await v1Service.match.addRangeMatch(request);
       res.status(200).json(ApiResponse.success(matches));
     } catch (err) {

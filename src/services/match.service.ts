@@ -38,19 +38,19 @@ export class MatchService {
   public async getAllMatchesByTournaments(
     tournamentGroupId: string
   ): Promise<MatchDto[]> {
-    console.log("tournamentGroupId", tournamentGroupId);
     const matches = await Match.find({
       tournamentGroupId: new Types.ObjectId(tournamentGroupId),
     })
       .populate({ path: "redPlayerId" })
       .populate({ path: "bluePlayerId" })
       .populate({ path: "winnerId" });
-    console.log("matches", matches);
+
     return mapper.mapArray<IMatch, MatchDto>(
       MappingProfileName.matchToDtoProfile,
       matches
     );
   }
+
   public async getMatchById(id: string): Promise<MatchDto> {
     const match = await Match.findById(id)
       .populate({ path: "redPlayerId" })
@@ -128,7 +128,6 @@ export class MatchService {
         matchMap.set(match.name, newMatch);
         return newMatch;
       });
-      console.log("matches", validPlayerIds);
 
       // 6️⃣ Lưu tất cả match trước
       const insertedMatches = await Match.insertMany(matches);
