@@ -1,7 +1,7 @@
 export type Pagination<T> = {
   items: T[];
   index: number;
-  limit: number;
+  total: number;
 };
 export class ApiResponse<T> {
   isSuccess?: boolean;

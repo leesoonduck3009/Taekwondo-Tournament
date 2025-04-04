@@ -30,7 +30,7 @@ export class TournamentGroupService {
       throw new Error(`Error creating tournament: ${error}`);
     }
   }
-  
+
   public async addRangeTournaments(
     request: CreateTournamentRequestDto[]
   ): Promise<TournamentGroupDto[]> {
@@ -53,9 +53,12 @@ export class TournamentGroupService {
     const tournaments = await TournamentGroup.find()
       .skip(limit * index)
       .limit(limit);
+
+    const total = await TournamentGroup.countDocuments({});
+
     const respone: Pagination<TournamentGroupDto> = {
       index: index,
-      limit: limit,
+      total: total,
       items: tournaments.map((tournament) => ({
         id: tournament.id,
         totalPlayers: tournament.totalPlayers,
