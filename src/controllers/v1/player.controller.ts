@@ -105,6 +105,7 @@ export class PlayerController {
       const excelService = new ExcelExtractionService<PlayerDto>();
 
       const players = excelService.extractDataFromExcel(req.file);
+      console.log("players", players);
       const response = await v1Service.Player.addRangePlayers(players);
       res.status(200).json(ApiResponse.success<PlayerDto[]>(response));
     } catch (error: any) {

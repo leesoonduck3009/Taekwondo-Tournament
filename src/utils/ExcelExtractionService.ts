@@ -16,9 +16,9 @@ export class ExcelExtractionService<T> {
       // Get first sheet
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-
+      const response = XLSX.utils.sheet_to_json<T>(worksheet);
       // Convert to Json
-      return XLSX.utils.sheet_to_json<T>(worksheet);
+      return response;
     } catch (error) {
       console.error("Error processing file:", error);
       throw new Error("Failed to extract data from Excel");
