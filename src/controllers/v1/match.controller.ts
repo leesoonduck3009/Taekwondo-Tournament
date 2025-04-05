@@ -26,13 +26,19 @@ export class MatchController {
   }
 
   public async getAllMatchesByTournaments(
-    req: Request<{ tournamentGroupId: string }, {}, {}, {}>,
+    req: Request<
+      { tournamentGroupId: string },
+      {},
+      {},
+      { isAvailable: boolean }
+    >,
     res: Response<ApiResponse<MatchDto[]>>,
     next: NextFunction
   ): Promise<void> {
     try {
       const matches = await v1Service.match.getAllMatchesByTournaments(
-        req.params.tournamentGroupId
+        req.params.tournamentGroupId,
+        req.query
       );
       res.status(200).json(ApiResponse.success<MatchDto[]>(matches));
     } catch (err) {

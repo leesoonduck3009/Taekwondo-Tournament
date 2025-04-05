@@ -37,7 +37,7 @@ export class MatchService {
 
   public async getAllMatchesByTournaments(
     tournamentGroupId: string,
-    params?: { isAvailable: boolean }
+    query?: { isAvailable: boolean }
   ): Promise<MatchDto[]> {
     const matches = await Match.find({
       tournamentGroupId: new Types.ObjectId(tournamentGroupId),
@@ -45,7 +45,7 @@ export class MatchService {
       .populate({ path: "redPlayerId" })
       .populate({ path: "bluePlayerId" })
       .populate({ path: "winnerId" });
-    if (params?.isAvailable ?? false) {
+    if (query?.isAvailable ?? false) {
       const availableMatches = matches.filter(
         (match) => !match.isFinished && match.redPlayerId && match.bluePlayerId
       );
