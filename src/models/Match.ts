@@ -16,6 +16,8 @@ export interface IMatch extends Document {
   matchTime: Date;
   parentMatchId?: mongoose.Types.ObjectId | IMatch;
   parentMatchSide?: MatchSide;
+  loseParentMatchId?: mongoose.Types.ObjectId | IMatch;
+  loseParentMatchSide?: MatchSide;
   isFinished: boolean;
   redWins: number;
   blueWins: number;
@@ -48,6 +50,14 @@ const MatchSchema = new Schema<IMatch>(
     parentMatchId: {
       type: Schema.Types.ObjectId,
       ref: TableName.Match,
+    },
+    loseParentMatchId: {
+      type: Schema.Types.ObjectId,
+      ref: TableName.Match,
+    },
+    loseParentMatchSide: {
+      type: String,
+      enum: [MatchSide.Red, MatchSide.Blue],
     },
     isFinished: { type: Boolean, default: false },
     matchTime: { type: Date, default: Date.now },

@@ -130,6 +130,7 @@ export class MatchService {
           bluePlayerId: match.bluePlayerId,
           tournamentGroupId: matchRequest.tournamentGroupId,
           parentMatchSide: match.parentMatchSide,
+          loseParentMatchSide: match.loseParentMatchSide,
           name: match.name,
           isFinished: match.isFinished ?? false,
           matchNo: match.matchNo,
@@ -143,13 +144,27 @@ export class MatchService {
       const insertedMatches = await Match.insertMany(matches);
       // 7️⃣ Gán `parentMatchId` sau khi lưu
       for (const match of matchRequest.matches) {
-        if (match.parentMatchName) {
-          const parentMatch = matchMap.get(match.parentMatchName);
-          if (parentMatch) {
-            const currentMatch = matchMap.get(match.name);
-            if (currentMatch) {
-              currentMatch.parentMatchId = parentMatch.id;
-              await currentMatch.save();
+        if (match.isLoseWinCase) {
+          const parentsMatches = match.parentMatchName.split("|");
+          const loseParentMatch = matchMap.get(parentsMatches[0]);
+          const winParentMatch = matchMap.get(parentsMatches[1]);
+          if (loseParentMatch) {
+            loseParentMatch.loseParentMatchId = winParentMatch?.id;
+            await loseParentMatch.save();
+          }
+          if (winParentMatch) {
+            winParentMatch.parentMatchId = loseParentMatch?.id;
+            await winParentMatch.save();
+          }
+        } else {
+          if (match.parentMatchName) {
+            const parentMatch = matchMap.get(match.parentMatchName);
+            if (parentMatch) {
+              const currentMatch = matchMap.get(match.name);
+              if (currentMatch) {
+                currentMatch.parentMatchId = parentMatch.id;
+                await currentMatch.save();
+              }
             }
           }
         }
@@ -173,11 +188,15 @@ export class MatchService {
     ) {
       throw new InvalidModelException("Invalid redRoundWins or blueWins");
     }
+    let loseId: Types.ObjectId | undefined = undefined;
     if (request.blueRoundWins > request.redRoundWins) {
       match.winnerId = match.bluePlayerId;
+      loseId = match.redPlayerId as Types.ObjectId;
     } else {
       match.winnerId = match.redPlayerId;
+      loseId = match.bluePlayerId as Types.ObjectId;
     }
+
     match.isFinished = true;
     match.blueWins = request.blueRoundWins;
     match.redWins = request.redRoundWins;
@@ -191,6 +210,18 @@ export class MatchService {
           parentMatch.bluePlayerId = match.winnerId;
         }
         await parentMatch.save();
+      }
+    }
+
+    if (match.loseParentMatchId) {
+      const loseParentMatch = await Match.findById(match.loseParentMatchId);
+      if (loseParentMatch) {
+        if (match.loseParentMatchSide === "Red") {
+          loseParentMatch.redPlayerId = loseId;
+        } else {
+          loseParentMatch.bluePlayerId = loseId;
+        }
+        await loseParentMatch.save();
       }
     }
 

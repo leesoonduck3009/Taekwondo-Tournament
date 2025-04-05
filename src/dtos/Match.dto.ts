@@ -30,6 +30,7 @@ export interface AddRangeMatchRequestDto {
   matches: PlayerAddRangeItemDto[];
   tournamentGroupId: string;
 }
+
 export interface PlayerAddRangeItemDto {
   redPlayerId: string;
   bluePlayerId: string;
@@ -38,4 +39,6 @@ export interface PlayerAddRangeItemDto {
   matchNo: number;
   parentMatchSide: MatchSide;
   isFinished?: boolean;
+  isLoseWinCase?: boolean;
+  loseParentMatchSide?: MatchSide;
 }
