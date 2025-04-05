@@ -84,7 +84,7 @@ export class MatchService {
       let tournamentGroup = await TournamentGroup.findById(
         matchRequest.tournamentGroupId
       );
-
+      console.log("matchRequest", matchRequest);
       if (!tournamentGroup) {
         throw new NotFoundException(
           `Tournament Group with id '${matchRequest.tournamentGroupId}' has not found`
@@ -146,15 +146,20 @@ export class MatchService {
       for (const match of matchRequest.matches) {
         if (match.isLoseWinCase) {
           const parentsMatches = match.parentMatchName.split("|");
+          const currentMatch = matchMap.get(match.name);
           const loseParentMatch = matchMap.get(parentsMatches[0]);
           const winParentMatch = matchMap.get(parentsMatches[1]);
           if (loseParentMatch) {
-            loseParentMatch.loseParentMatchId = winParentMatch?.id;
-            await loseParentMatch.save();
+            if (currentMatch) {
+              currentMatch.loseParentMatchId = winParentMatch?.id;
+              await currentMatch.save();
+            }
           }
           if (winParentMatch) {
-            winParentMatch.parentMatchId = loseParentMatch?.id;
-            await winParentMatch.save();
+            if (currentMatch) {
+              currentMatch.parentMatchId = loseParentMatch?.id;
+              await currentMatch.save();
+            }
           }
         } else {
           if (match.parentMatchName) {
