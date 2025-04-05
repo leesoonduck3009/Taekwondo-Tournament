@@ -19,6 +19,7 @@ export interface IMatch extends Document {
   isFinished: boolean;
   redWins: number;
   blueWins: number;
+  matchNo: number;
 }
 
 const MatchSchema = new Schema<IMatch>(
@@ -50,6 +51,7 @@ const MatchSchema = new Schema<IMatch>(
     },
     isFinished: { type: Boolean, default: false },
     matchTime: { type: Date, default: Date.now },
+    matchNo: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

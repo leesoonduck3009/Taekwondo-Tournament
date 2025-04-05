@@ -28,5 +28,6 @@ export const matchToDtoProfile = new Profile<IMatch, MatchDto>((match) => {
     blueWins: match.blueWins,
     isFinished: match.isFinished,
     matchTime: match.matchTime,
+    matchNo: match.matchNo,
   };
 });

@@ -123,6 +123,7 @@ export class MatchService {
           parentMatchSide: match.parentMatchSide,
           name: match.name,
           isFinished: match.isFinished ?? false,
+          matchNo: match.matchNo,
         });
 
         matchMap.set(match.name, newMatch);

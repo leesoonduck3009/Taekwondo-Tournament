@@ -15,6 +15,7 @@ export class MatchDto {
   bluePlayer?: PlayerDto;
   redWins!: number;
   blueWins!: number;
+  matchNo!: number;
   winner?: PlayerDto;
   matchTime!: Date;
   parentMatchName?: string;
@@ -34,6 +35,7 @@ export interface PlayerAddRangeItemDto {
   bluePlayerId: string;
   parentMatchName: string;
   name: string;
+  matchNo: number;
   parentMatchSide: MatchSide;
   isFinished?: boolean;
 }
