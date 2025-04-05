@@ -12,7 +12,7 @@ export interface PlayerAddRangeItemDto {
   studentId: string;
   gender: Gender;
   weight: number;
-  avatarUrl: string;
+  avatarUrl?: string;
 }
 export interface PlayerAddRangeRequestDto {
   items: PlayerAddRangeItemDto[];
@@ -23,5 +23,5 @@ export class PlayerDto {
   studentId!: string;
   gender!: Gender;
   weight!: number;
-  avatarUrl!: string;
+  avatarUrl?: string;
 }

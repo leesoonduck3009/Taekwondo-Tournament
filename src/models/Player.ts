@@ -17,7 +17,7 @@ const PlayerSchema = new Schema<IPlayer>(
     studentId: { type: String, required: true },
     gender: { type: String, enum: Object.values(Gender), required: true },
     weight: { type: Number, required: true },
-    avatarUrl: { type: String, required: true },
+    avatarUrl: { type: String, required: false },
   },
   { timestamps: true }
 );
