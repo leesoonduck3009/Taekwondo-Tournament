@@ -151,13 +151,13 @@ export class MatchService {
           const winParentMatch = matchMap.get(parentsMatches[1]);
           if (loseParentMatch) {
             if (currentMatch) {
-              currentMatch.loseParentMatchId = winParentMatch?.id;
+              currentMatch.loseParentMatchId = loseParentMatch?.id;
               await currentMatch.save();
             }
           }
           if (winParentMatch) {
             if (currentMatch) {
-              currentMatch.parentMatchId = loseParentMatch?.id;
+              currentMatch.parentMatchId = winParentMatch?.id;
               await currentMatch.save();
             }
           }
