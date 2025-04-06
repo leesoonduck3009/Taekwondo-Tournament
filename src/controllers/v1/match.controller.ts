@@ -3,8 +3,8 @@ import { ApiResponse } from "../../dtos/api.response";
 import {
   AddRangeMatchRequestDto,
   CreateMatchRequestDto,
+  MatchAddRangeItem,
   MatchDto,
-  PlayerAddRangeItemDto,
   WinMatchRequestDto,
 } from "../../dtos/Match.dto";
 import { v1Service } from "../../services/index.service";
@@ -71,7 +71,7 @@ export class MatchController {
         throw new Error("File is required");
       }
 
-      const excelService = new ExcelExtractionService<PlayerAddRangeItemDto>();
+      const excelService = new ExcelExtractionService<MatchAddRangeItem>();
 
       const sheetDataResponse =
         excelService.extractDataWithSheetNameFromExcel(file);
@@ -90,6 +90,26 @@ export class MatchController {
       next(err);
     }
   }
+
+  public async exportMatchesToExcel(
+    req: Request<{}, {}, {}, { fileName: string }>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const fileName = req.query.fileName ?? "Tournament Matches";
+      const matches = await v1Service.match.exportAllMatchesToExcel(fileName);
+      res.setHeader("Content-Type", matches.mimeType);
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${fileName}.xlsx"`
+      );
+      res.status(200).send(matches.buffer);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   public async winMatchById(
     req: Request<{ id: string }, {}, WinMatchRequestDto>,
     res: Response,

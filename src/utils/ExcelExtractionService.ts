@@ -50,3 +50,54 @@ export class ExcelExtractionService<T> {
     }
   }
 }
+
+export class ExcelExportationService<T> {
+  public exportDataToExcel(
+    data: T[],
+    fileName: string,
+    sheetName: string
+  ): Express.Multer.File {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+
+    const buffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "buffer",
+    });
+
+    return {
+      fieldname: "file",
+      originalname: fileName,
+      encoding: "utf8",
+      mimetype:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      buffer,
+      size: buffer.length,
+    } as Express.Multer.File;
+  }
+  public exportDataToExcelWithMultipleSheets<T>(
+    data: Map<string, T[]>,
+    fileName: string
+  ): { buffer: Buffer; fileName: string; mimeType: string } {
+    const workbook = XLSX.utils.book_new();
+
+    data.forEach((value, key) => {
+      const worksheet = XLSX.utils.json_to_sheet(value);
+      const sheetName = key.length > 31 ? key.slice(0, 31) : key;
+      XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    });
+
+    const buffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "buffer",
+    });
+
+    return {
+      buffer,
+      fileName,
+      mimeType:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    };
+  }
+}

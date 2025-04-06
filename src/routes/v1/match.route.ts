@@ -11,6 +11,8 @@ route.get(
   v1Controller.Match.getAllMatchesByTournaments
 );
 
+route.get("/export-excel-data", v1Controller.Match.exportMatchesToExcel);
+
 route.post("/", v1Controller.Match.createMatch);
 route.put("/win/:id", v1Controller.Match.winMatchById);
 route.get("/:id", v1Controller.Match.getMatchById);

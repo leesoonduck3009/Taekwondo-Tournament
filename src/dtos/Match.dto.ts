@@ -27,11 +27,11 @@ export interface WinMatchRequestDto {
   blueRoundWins: number;
 }
 export interface AddRangeMatchRequestDto {
-  matches: PlayerAddRangeItemDto[];
+  matches: MatchAddRangeItem[];
   tournamentGroupId: string;
 }
 
-export interface PlayerAddRangeItemDto {
+export interface MatchAddRangeItem {
   redPlayerId: string;
   bluePlayerId: string;
   parentMatchName: string;
@@ -41,4 +41,16 @@ export interface PlayerAddRangeItemDto {
   isFinished?: boolean;
   isLoseWinCase?: boolean;
   loseParentMatchSide?: MatchSide;
+}
+
+export interface MatchExportExcel {
+  "Tournament group name": string;
+  "Match number": number;
+  "Match name"?: string;
+  "Match status": string;
+  "Red player name": string;
+  "Blue player name": string;
+  "Rounds red win"?: number;
+  "Rounds blue win"?: number;
+  "Winner name"?: string;
 }

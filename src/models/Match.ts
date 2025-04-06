@@ -2,13 +2,14 @@ import mongoose, { Model, Schema, Document } from "mongoose";
 import { TableName } from "../enums/TableName";
 import { IPlayer } from "./Player";
 import { IRound } from "./Round";
+import { ITournamentGroup } from "./TournamentGroup";
 export enum MatchSide {
   Red = "Red",
   Blue = "Blue",
 }
 
 export interface IMatch extends Document {
-  tournamentGroupId: mongoose.Types.ObjectId;
+  tournamentGroupId: mongoose.Types.ObjectId | ITournamentGroup;
   name: string;
   winnerId?: mongoose.Types.ObjectId | IPlayer;
   redPlayerId?: mongoose.Types.ObjectId | IPlayer;

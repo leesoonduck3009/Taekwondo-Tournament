@@ -3,17 +3,22 @@ import {
   AddRangeMatchRequestDto,
   CreateMatchRequestDto,
   MatchDto,
+  MatchExportExcel,
   WinMatchRequestDto,
 } from "../dtos/Match.dto";
 import { IMatch, Match } from "../models/Match";
 import { NotFoundException } from "../exceptions/NotFoundException";
-import { TournamentGroup } from "../models/TournamentGroup";
+import { ITournamentGroup, TournamentGroup } from "../models/TournamentGroup";
 import { PaginationRequest } from "../dtos/api.request";
 import { IPlayer, Player } from "../models/Player";
 import mapper from "../mapping/Mapper";
 import { MappingProfileName } from "../mapping/profiles/MappingProfileName";
 import { Pagination } from "../dtos/api.response";
 import { InvalidModelException } from "../exceptions/InvalidModelException";
+import {
+  ExcelExportationService,
+  ExcelExtractionService,
+} from "../utils/ExcelExtractionService";
 
 export class MatchService {
   public async createMatch(request: CreateMatchRequestDto) {
@@ -237,6 +242,42 @@ export class MatchService {
     );
   }
 
+  public async exportAllMatchesToExcel(fileName: string) {
+    const matches = await Match.find({})
+      .populate({ path: "tournamentGroupId" })
+      .populate({ path: "redPlayerId" })
+      .populate({ path: "bluePlayerId" })
+      .populate({ path: "winnerId" });
+    const mapResponse = new Map<string, MatchExportExcel[]>();
+    matches.forEach((match) => {
+      const tournamentGroup = match.tournamentGroupId as ITournamentGroup;
+      const redPlayer = match.redPlayerId as IPlayer | undefined;
+      const bluePlayer = match.bluePlayerId as IPlayer | undefined;
+      const winnerPlayer = match.winnerId as IPlayer | undefined;
+
+      const matchDetail = {
+        "Tournament group name": tournamentGroup.weightClass,
+        "Match number": match.matchNo,
+        "Red player name": redPlayer?.name ?? "",
+        "Blue player name": bluePlayer?.name ?? "",
+        "Match status": match.isFinished ? "Finished" : "Not finished",
+        "Match name": match?.name ?? "",
+        "Winner name": winnerPlayer?.name ?? "",
+        "Rounds red win": match.redWins,
+        "Rounds blue win": match.blueWins,
+      };
+
+      const groupId = tournamentGroup.id;
+      const groupMatches = mapResponse.get(groupId) ?? [];
+      groupMatches.push(matchDetail);
+      mapResponse.set(groupId, groupMatches);
+    });
+    const excelExtractionService = new ExcelExportationService();
+    return excelExtractionService.exportDataToExcelWithMultipleSheets(
+      mapResponse,
+      fileName
+    );
+  }
   public updateMatchById(id: string) {
     //TODO: Implement this updateMatchById method
   }
